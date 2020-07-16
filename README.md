@@ -1,29 +1,76 @@
 # vue-push
 
-## Project setup
-```
-yarn install
-```
+```js
+const router = new VueRouter({
+  mode:'history',
+  routes:[
+    { path:'/', name:'A',component:()=> import('./view/a.vue')},
+    { path:'/b',name:'B',component:()=> import('./view/b.vue')},
+    { path:'/c',name:'C',component:()=> import('./view/c.vue')},
+    { path:'/d',name:'D',component:()=> import('./view/d.vue')}
+  ]
+})
 
-### Compiles and hot-reloads for development
-```
-yarn run serve
-```
+export const RouterStore = Vue.observable({
+  route:{
+    currentRoute:null,
+    direction:'forward',
+    keepAliveSelf:false,
+   
+  },
+  keepAliveRoutes:[],
 
-### Compiles and minifies for production
-```
-yarn run build
-```
+  pickerRoute:function(route){
+    this.route = route
+    if(route.keepAliveSelf){
+      this.pushAlive(route.name)
+    }else{
+      this.removeAlive(route.name)
+    }
+  },
+  findAliveRouteIndex(name){
+    return this.keepAliveRoutes.findIndex(item=>item===name)
+  },
+  pushAlive:function(name){
+    const index = this.findAliveRouteIndex(name)
+    if(index === -1){
+      this.keepAliveRoutes.push(name)
+    }
+  },
 
-### Run your tests
-```
-yarn run test
-```
+  removeAlive:function(name){
+    const index = this.findAliveRouteIndex(name)
+    if(index !== -1){
+      this.keepAliveRoutes.splice(index,1)
+    }
+  }
+})
 
-### Lints and fixes files
-```
-yarn run lint
-```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+let routeInfo = {}
+Vue.prototype.$routerBack = function(path,query){
+  const init =  { direction:'back',keepAliveSelf:false}
+  routeInfo = Object.assign(init,query)
+
+  if(path){
+    path!==RouterStore.route.currentRoute.path&& router.push(path)
+  }else{
+    router.back()
+  }
+  
+}
+Vue.prototype.$routerPush = function(path,query){
+  const init =  { direction:'forward',keepAliveSelf:false}
+  routeInfo = Object.assign(init,query)
+  router.push(path)
+}
+
+router.beforeEach((to, from, next) => {
+  RouterStore.pickerRoute({
+    ...routeInfo,
+    name:from.name,
+    currentRoute:to
+  })
+  next()
+})
+```

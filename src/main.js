@@ -16,10 +16,10 @@ const router = new VueRouter({
 
 export const RouterStore = Vue.observable({
   route:{
+    currentRoute:null,
     direction:'forward',
     keepAliveSelf:false,
-    toBack:null,
-    defaultBackPath:null
+   
   },
   keepAliveRoutes:[],
 
@@ -51,28 +51,28 @@ export const RouterStore = Vue.observable({
 
 
 let routeInfo = {}
-Vue.prototype.$routerBack = function(query){
-  
-  const init =  { direction:'back',keepAliveSelf:false,toBack:null}
+Vue.prototype.$routerBack = function(path,query){
+  const init =  { direction:'back',keepAliveSelf:false}
   routeInfo = Object.assign(init,query)
-  if(routeInfo.toBack){
-    router.go()
-  } else{
+
+  if(path){
+    path!==RouterStore.route.currentRoute.path&& router.push(path)
+  }else{
     router.back()
   }
+  
 }
 Vue.prototype.$routerPush = function(path,query){
-  const init =  { direction:'forward',keepAliveSelf:false,toBack:null}
+  const init =  { direction:'forward',keepAliveSelf:false}
   routeInfo = Object.assign(init,query)
   router.push(path)
 }
 
 router.beforeEach((to, from, next) => {
- 
   RouterStore.pickerRoute({
     ...routeInfo,
-    defaultBackPath:from.path,
-    name:from.name
+    name:from.name,
+    currentRoute:to
   })
   next()
 })

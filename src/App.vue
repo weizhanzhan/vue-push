@@ -7,10 +7,9 @@
     </div>
     <div>
       <ul>
+        <li>当前路由:{{RouterStore.route.currentRoute.path}}</li>
         <li>direction:{{RouterStore.route.direction}}</li>
         <li>keepAliveSelf:{{RouterStore.route.keepAliveSelf}}</li>
-        <li>toBack:{{RouterStore.route.toBack}}</li>
-        <li>defaultBackPath:{{RouterStore.route.defaultBackPath}}</li>
         <li>name:{{RouterStore.route.name}}</li>
       </ul>
       <p>缓存的有</p>

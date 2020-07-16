@@ -5,7 +5,7 @@
       <button @click="$routerBack()">返回</button>
     </div>
     <ul>
-      <li @click="$routerPush('/d')">D</li>
+      <li @click="$routerPush('/d',{keepAliveSelf:true})">D</li>
     </ul>
   </div>
 </template>

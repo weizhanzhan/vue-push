@@ -3,7 +3,7 @@
     D页面
     <div>
       <button @click="$routerBack()">返回</button>
-      <button @click="$routerBack({toBack:'a'})">回到A</button>
+      <button @click="$routerBack('/')">回到A</button>
     </div>
   </div>
 </template>

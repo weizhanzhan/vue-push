@@ -3,7 +3,7 @@
   <div>
     A页面首页
      <div>
-      <button @click="$routerBack()">返回</button>
+      <button @click="$routerBack('/')">返回</button>
     </div>
     <ul>
       <li @click="$routerPush('/b',{keepAliveSelf:true})">B</li>
